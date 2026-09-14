@@ -1,0 +1,28 @@
+#!/bin/bash
+
+#SBATCH --job-name=cbramod_japan_rand
+
+#SBATCH --account=def-amiilab
+
+#SBATCH --gpus-per-node=1
+
+#SBATCH --time=03:00:00
+
+#SBATCH --output=/scratch/nourmaj/cbramod_japaneeg_random_%j.out
+
+source ~/envs/eeg-gpu/bin/activate
+
+export HOME=/scratch/nourmaj/fake_home
+
+mkdir -p $HOME
+
+export NUMBA_DISABLE_JIT=1
+
+export NUMBA_CACHE_DIR=/scratch/nourmaj/numba_cache
+
+mkdir -p $NUMBA_CACHE_DIR
+
+cd /home/nourmaj/CBraMod
+
+python finetune_main.py --downstream_dataset JapanEEG --datasets_dir /scratch/nourmaj/japaneeg_processed --num_of_classes 1 --lr 0.0001 --weight_decay 0.05 --epochs 50 --batch_size 32 --dropout 0.1 --model_dir /scratch/nourmaj/cbramod_japaneeg_random --use_pretrained_weights False
+
